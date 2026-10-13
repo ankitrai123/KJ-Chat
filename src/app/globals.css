@@ -1,26 +1,196 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-chat: var(--chat);
+  --color-bubble-in: var(--bubble-in);
+  --color-bubble-in-foreground: var(--bubble-in-foreground);
+  --color-bubble-out: var(--bubble-out);
+  --color-bubble-out-foreground: var(--bubble-out-foreground);
+  --color-online: var(--online);
+  --color-mention: var(--mention);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Light theme. Contrast of foreground pairs is >= 4.5:1 (WCAG AA). */
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.99 0.002 200);
+  --foreground: oklch(0.2 0.02 230);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.02 230);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.02 230);
+  --primary: oklch(0.5 0.1 190);
+  --primary-foreground: oklch(0.99 0.005 190);
+  --secondary: oklch(0.95 0.01 200);
+  --secondary-foreground: oklch(0.25 0.02 230);
+  --muted: oklch(0.955 0.006 210);
+  --muted-foreground: oklch(0.47 0.02 230);
+  --accent: oklch(0.94 0.02 190);
+  --accent-foreground: oklch(0.25 0.03 220);
+  --destructive: oklch(0.55 0.21 27);
+  --destructive-foreground: oklch(0.99 0 0);
+  --success: oklch(0.55 0.13 150);
+  --warning: oklch(0.7 0.15 75);
+  --border: oklch(0.91 0.008 210);
+  --input: oklch(0.88 0.01 210);
+  --ring: oklch(0.55 0.1 190);
+  --sidebar: oklch(1 0 0);
+  --chat: oklch(0.965 0.008 190);
+  --bubble-in: oklch(1 0 0);
+  --bubble-in-foreground: oklch(0.2 0.02 230);
+  --bubble-out: oklch(0.9 0.05 175);
+  --bubble-out-foreground: oklch(0.2 0.03 200);
+  --online: oklch(0.65 0.17 150);
+  --mention: oklch(0.45 0.13 250);
+}
+
+.dark {
+  --background: oklch(0.17 0.012 230);
+  --foreground: oklch(0.94 0.008 210);
+  --card: oklch(0.21 0.014 230);
+  --card-foreground: oklch(0.94 0.008 210);
+  --popover: oklch(0.23 0.014 230);
+  --popover-foreground: oklch(0.94 0.008 210);
+  --primary: oklch(0.72 0.11 185);
+  --primary-foreground: oklch(0.18 0.03 200);
+  --secondary: oklch(0.27 0.015 230);
+  --secondary-foreground: oklch(0.94 0.008 210);
+  --muted: oklch(0.25 0.012 230);
+  --muted-foreground: oklch(0.72 0.015 220);
+  --accent: oklch(0.28 0.025 200);
+  --accent-foreground: oklch(0.94 0.008 210);
+  --destructive: oklch(0.65 0.19 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --success: oklch(0.7 0.14 150);
+  --warning: oklch(0.78 0.14 80);
+  --border: oklch(0.3 0.012 230);
+  --input: oklch(0.34 0.014 230);
+  --ring: oklch(0.65 0.1 185);
+  --sidebar: oklch(0.19 0.013 230);
+  --chat: oklch(0.15 0.012 230);
+  --bubble-in: oklch(0.25 0.014 230);
+  --bubble-in-foreground: oklch(0.94 0.008 210);
+  --bubble-out: oklch(0.38 0.06 190);
+  --bubble-out-foreground: oklch(0.97 0.005 190);
+  --online: oklch(0.72 0.17 150);
+  --mention: oklch(0.78 0.11 250);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    overscroll-behavior: none;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  /* Respect users who prefer reduced motion. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .h-dvh-safe {
+    height: 100dvh;
+  }
+
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom), 0px);
+  }
+
+  .pt-safe {
+    padding-top: max(env(safe-area-inset-top), 0px);
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* LiveKit call controls. Unlayered so they take precedence over @livekit/components-styles. */
+.lk-button.call-control {
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border-radius: 9999px;
+  justify-content: center;
+  background-color: rgb(255 255 255 / 0.14);
+  color: #fff;
+}
+
+.lk-button.call-control[data-lk-enabled="false"] {
+  background-color: #fff;
+  color: #111;
+}
+
+.lk-button.call-control[data-lk-source="screen_share"][data-lk-enabled="true"] {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.lk-button.call-control:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
 }
