@@ -6,10 +6,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function initials(name: string | null | undefined): string {
-  const parts = (name ?? "").trim().split(/\s+/).filter(Boolean);
+  // Only words that start with a letter or digit count (skips emoji and punctuation).
+  const parts = (name ?? "")
+    .trim()
+    .split(/\s+/)
+    .map((part) => Array.from(part).find((ch) => /[\p{L}\p{N}]/u.test(ch)) ?? "")
+    .filter(Boolean);
   if (parts.length === 0) return "?";
-  const first = Array.from(parts[0])[0] ?? "";
-  const last = parts.length > 1 ? (Array.from(parts[parts.length - 1])[0] ?? "") : "";
+  const first = parts[0];
+  const last = parts.length > 1 ? parts[parts.length - 1] : "";
   return (first + last).toUpperCase();
 }
 

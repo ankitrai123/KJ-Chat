@@ -29,7 +29,7 @@ export default async function setup(project: TestProject) {
   } catch (error) {
     throw new Error(
       `Integration tests need PostgreSQL 15+ at TEST_DATABASE_URL (${adminUrl()}). ` +
-        `See README "Running the database integration tests". Cause: ${(error as Error).message}`,
+        `See README "Testing". Cause: ${(error as Error).message}`,
     );
   }
 

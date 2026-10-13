@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/misc";
 import { useGroupActions } from "@/hooks/use-group-actions";
+import { isGroupAdmin, memberActions } from "@/lib/chat/permissions";
 import { ConfirmDialog, type ConfirmRequest } from "@/components/ui/confirm-dialog";
 import type { ConversationSummary, MemberWithProfile } from "@/types/chat";
 import { AddMembersDialog } from "./add-members-dialog";
@@ -34,7 +35,7 @@ export function GroupMembers({
   const [addOpen, setAddOpen] = useState(false);
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
   const myRole = conversation.my_role;
-  const isAdmin = myRole === "owner" || myRole === "admin";
+  const isAdmin = isGroupAdmin(myRole);
 
   return (
     <div className="grid gap-2">
@@ -49,10 +50,7 @@ export function GroupMembers({
       <ul className="grid gap-1">
         {members.map((m) => {
           const isMe = m.user_id === myUserId;
-          const canRemove = isAdmin && !isMe && m.role !== "owner" && (m.role !== "admin" || myRole === "owner");
-          const canPromote = isAdmin && !isMe && m.role === "member";
-          const canDemote = myRole === "owner" && !isMe && m.role === "admin";
-          const canTransfer = myRole === "owner" && !isMe;
+          const { remove: canRemove, promote: canPromote, demote: canDemote, transferOwnership: canTransfer } = memberActions(myRole, m.role, isMe);
           const name = m.profile?.display_name ?? "Former member";
           return (
             <li key={m.user_id} className="flex items-center gap-3 rounded-md px-1 py-1.5">

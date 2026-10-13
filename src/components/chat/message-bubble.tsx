@@ -31,8 +31,9 @@ import {
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 import { groupReactions } from "@/lib/chat/message-cache";
 import { messagePreview, systemEventText } from "@/lib/chat/format";
+import { canEditMessage } from "@/lib/chat/permissions";
 import type { ReceiptState } from "@/lib/chat/receipts";
-import { formatDuration, formatMessageTime } from "@/lib/chat/time";
+import { formatCallDuration, formatMessageTime } from "@/lib/chat/time";
 import { cn } from "@/lib/utils";
 import type { ChatMessage, Profile } from "@/types/chat";
 import { AttachmentView } from "./attachment-view";
@@ -55,7 +56,6 @@ export interface MessageCallbacks {
   onCallBack: (mediaType: "audio" | "video") => void;
 }
 
-const EDIT_WINDOW_MS = 48 * 3600 * 1000;
 const SENDER_COLORS = ["text-sky-700 dark:text-sky-300", "text-emerald-700 dark:text-emerald-300", "text-violet-700 dark:text-violet-300", "text-amber-700 dark:text-amber-300", "text-rose-700 dark:text-rose-300", "text-teal-700 dark:text-teal-300"];
 
 function colorFor(userId: string | null) {
@@ -111,7 +111,7 @@ export const CallLogMessage = memo(function CallLogMessage({
           <span className="block text-sm font-medium">{label}</span>
           <span className="block text-xs text-muted-foreground">
             {formatMessageTime(message.created_at)}
-            {!missed && duration > 0 ? ` · ${formatDuration(duration)}` : ""}
+            {!missed && duration > 0 ? ` · ${formatCallDuration(duration)}` : ""}
           </span>
         </span>
       </button>
@@ -156,7 +156,7 @@ export const MessageBubble = memo(function MessageBubble({
   const [pickerOpen, setPickerOpen] = useState(false);
   const local = message.localStatus === "pending" || message.localStatus === "failed";
   const deleted = Boolean(message.deleted_at);
-  const canEdit = isMine && !deleted && !local && message.message_type !== "voice" && Date.now() - Date.parse(message.created_at) < EDIT_WINDOW_MS;
+  const canEdit = canEditMessage(message, isMine, Date.now());
   const reactions = groupReactions(message.reactions, myUserId);
   const tone = isMine ? "out" : "in";
 
@@ -256,21 +256,21 @@ export const MessageBubble = memo(function MessageBubble({
                       <MoreHorizontal className="size-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align={isMine ? "end" : "start"} className="w-56">
+                  <DropdownMenuContent align={isMine ? "end" : "start"} className="w-[17rem]">
                     {!deleted && (
                       <>
                         <div className="flex items-center justify-between gap-1 px-1 py-1" role="group" aria-label="Quick reactions">
                           {QUICK_REACTIONS.map((emoji) => (
                             <DropdownMenuItem
                               key={emoji}
-                              className="justify-center p-1.5 text-lg"
+                              className="justify-center p-1 text-lg"
                               onSelect={() => callbacks.onReact(message, emoji)}
                               aria-label={`React with ${emoji}`}
                             >
                               {emoji}
                             </DropdownMenuItem>
                           ))}
-                          <DropdownMenuItem className="justify-center p-1.5" onSelect={() => setPickerOpen(true)} aria-label="More reactions">
+                          <DropdownMenuItem className="justify-center p-1" onSelect={() => setPickerOpen(true)} aria-label="More reactions">
                             <SmilePlus />
                           </DropdownMenuItem>
                         </div>

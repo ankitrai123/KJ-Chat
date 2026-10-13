@@ -20,6 +20,8 @@ const nextConfig: NextConfig = {
   // Cache Components is off: nearly every page is per-user and rendered from live data, so the
   // static-shell model adds Suspense constraints without a benefit for this app.
   cacheComponents: false,
+  // Lets the smoke-test build (placeholder config) live next to the real one.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   poweredByHeader: false,
   reactStrictMode: true,
   turbopack: {

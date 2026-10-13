@@ -2,9 +2,10 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowDown } from "lucide-react";
-import { forwardRef, Fragment, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { forwardRef, Fragment, type ReactNode, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton, Spinner } from "@/components/ui/misc";
+import { canDeleteForEveryone, canPinMessages } from "@/lib/chat/permissions";
 import { receiptState } from "@/lib/chat/receipts";
 import { compareTimestamps, formatDaySeparator, isDifferentDay } from "@/lib/chat/time";
 import { queryKeys } from "@/lib/query-keys";
@@ -51,7 +52,6 @@ export const MessageList = forwardRef<
   const lastMarkedRef = useRef<string | null>(null);
 
   const isGroup = conversation.type === "group";
-  const isAdmin = conversation.my_role === "owner" || conversation.my_role === "admin";
 
   const profiles = useMemo(() => {
     const map = new Map<string, Profile>();
@@ -188,7 +188,7 @@ export const MessageList = forwardRef<
         (m) =>
           m.sender_id !== myUserId &&
           m.message_type !== "system" &&
-          !m.localStatus?.startsWith("p") &&
+          m.localStatus === "sent" &&
           compareTimestamps(m.created_at, initialLastReadAt) > 0,
       )?.id ?? null
     );
@@ -252,7 +252,7 @@ export const MessageList = forwardRef<
               !next || next.sender_id !== message.sender_id || isDifferentDay(message.created_at, next.created_at) || next.message_type === "system";
             const isMine = message.sender_id === myUserId;
 
-            let node: React.ReactNode;
+            let node: ReactNode;
             if (message.message_type === "system") {
               node = <SystemMessage message={message} nameOf={nameOf} />;
             } else if (message.message_type === "call") {
@@ -269,8 +269,8 @@ export const MessageList = forwardRef<
                   receipt={isMine ? receiptState(message, members, myUserId, { showReadReceipts }) : null}
                   highlighted={highlight === message.id}
                   isPinned={pinnedIds.has(message.id)}
-                  canPin={!isGroup || isAdmin}
-                  canDeleteForEveryone={isMine || (isGroup && isAdmin)}
+                  canPin={canPinMessages(isGroup, conversation.my_role)}
+                  canDeleteForEveryone={canDeleteForEveryone(message, isMine, isGroup, conversation.my_role)}
                   isGroup={isGroup}
                   nameOf={nameOf}
                   isMentionable={isMentionable}

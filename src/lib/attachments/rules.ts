@@ -178,8 +178,8 @@ export function validateAttachmentFile(
 /** Restricts stored object names to a safe subset; the original name is kept in the database. */
 export function sanitizeFileName(name: string): string {
   const ext = fileExtension(name);
-  const base = name
-    .replace(/\.[^.]*$/, "")
+  // Only strip a real trailing extension (a dot inside a path segment isn't one).
+  const base = (ext ? name.slice(0, -(ext.length + 1)) : name)
     .normalize("NFKD")
     .replace(/[^A-Za-z0-9._-]+/g, "_")
     .replace(/_+/g, "_")

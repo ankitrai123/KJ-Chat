@@ -100,6 +100,9 @@ export async function requestPasswordResetAction(input: ForgotPasswordInput): Pr
   if (error && /rate limit|too many/i.test(error.message)) {
     return { ok: false, error: "Too many requests. Please wait a few minutes and try again." };
   }
+  if (error && (error.name === "AuthRetryableFetchError" || error.status === 0 || /fetch failed/i.test(error.message))) {
+    return { ok: false, error: "Can't reach the server. Check your connection and try again." };
+  }
   // Same response whether or not the account exists, so emails can't be enumerated.
   return { ok: true, message: "If an account exists for that email, a reset link is on its way." };
 }

@@ -14,6 +14,7 @@ import { Switch } from "@/components/ui/misc";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUpdatePreferences } from "@/hooks/use-conversations";
 import { isMuted } from "@/lib/chat/conversations";
+import { canEditGroupInfo } from "@/lib/chat/permissions";
 import { type ConversationSummary, conversationTitle, type MemberWithProfile } from "@/types/chat";
 import { SharedMedia } from "./shared-media";
 
@@ -41,7 +42,7 @@ export function ConversationDetails({
   const [editing, setEditing] = useState(false);
   const updatePreferences = useUpdatePreferences();
   const isGroup = conversation.type === "group";
-  const isAdmin = conversation.my_role === "owner" || conversation.my_role === "admin";
+  const isAdmin = canEditGroupInfo(conversation.my_role);
   const peerMember = !isGroup ? members.find((m) => m.user_id !== myUserId) : undefined;
   const title = conversationTitle(conversation);
   const muted = isMuted(conversation);

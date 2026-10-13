@@ -14,7 +14,7 @@ import { useConversations, useUpdatePreferences } from "@/hooks/use-conversation
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { type ConversationFilter, filterConversations, sortConversations } from "@/lib/chat/conversations";
 import { formatListTimestamp } from "@/lib/chat/time";
-import { fromDatabaseError, toUserMessage } from "@/lib/errors";
+import { fromDatabaseError } from "@/lib/errors";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { conversationTitle } from "@/types/chat";
@@ -160,9 +160,7 @@ export function Sidebar() {
                 active={params.conversationId === c.id}
                 myUserId={userId}
                 now={now}
-                onUpdate={(patch) =>
-                  updatePreferences.mutate({ conversationId: c.id, patch }, { onError: (e) => console.warn(toUserMessage(e)) })
-                }
+                onUpdate={(patch) => updatePreferences.mutate({ conversationId: c.id, patch })}
               />
             ))}
           </ul>
